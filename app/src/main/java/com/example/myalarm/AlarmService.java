@@ -97,14 +97,6 @@ public class AlarmService extends android.app.Service {
         }
     }
 
-    // Function to set alarm volume independently
-    private void setAlarmVolume(int volume) {
-        // Set the volume for the alarm stream (0 to max volume)
-        int maxVolume = audioManager.getStreamMaxVolume(AudioManager.STREAM_ALARM);
-        int volumeLevel = (int) (maxVolume * (volume / 100.0));  // Map to max volume scale
-        audioManager.setStreamVolume(AudioManager.STREAM_ALARM, volumeLevel, 0);
-    }
-
     @Override
     public void onDestroy() {
         super.onDestroy();

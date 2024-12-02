@@ -8,8 +8,10 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.media.MediaPlayer;
+import android.os.Build;
 
 import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 
 import java.io.IOException;
 
@@ -35,17 +37,11 @@ public class AlarmReceiver extends BroadcastReceiver {
         // Create a notification channel for Android O and above
         createNotificationChannel(context);
 
-        // Create the notification
-        Notification notification = new NotificationCompat.Builder(context, CHANNEL_ID)
-                .setContentTitle("ALARM!")
-                .setContentText("It's time!")
-                .setSmallIcon(android.R.drawable.ic_dialog_alert)
-                .setPriority(NotificationCompat.PRIORITY_HIGH)
-                .setAutoCancel(true)
-                .build();
-
         // Create an intent to launch MainActivity when the notification is tapped
         Intent launchIntent = new Intent(context, AlarmActivity.class);
+        launchIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        context.startActivity(launchIntent);
+
         PendingIntent pendingIntent = PendingIntent.getActivity(
                 context,
                 0,
@@ -53,13 +49,33 @@ public class AlarmReceiver extends BroadcastReceiver {
                 PendingIntent.FLAG_IMMUTABLE // Make it immutable since we don't modify the PendingIntent
         );
 
-        // Set the content intent for the notification
-        notification.contentIntent = pendingIntent;
+
+
+        // Create the notification
+        NotificationCompat.Builder notification = new NotificationCompat.Builder(context, CHANNEL_ID)
+                .setContentTitle("ALARM!")
+                .setContentText("It's time!")
+                .setSmallIcon(android.R.drawable.ic_dialog_alert)
+                .setPriority(NotificationCompat.PRIORITY_HIGH)
+                .setAutoCancel(true)
+                .setContentIntent(pendingIntent)
+                .setFullScreenIntent(pendingIntent, true);
+
+
 
         // Get the NotificationManager to show the notification
-        NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
+        // Create notification channel (required for Android O and above)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            CharSequence name = "Alarm Channel";
+            String description = "Channel for alarm notifications";
+            int importance = NotificationManager.IMPORTANCE_HIGH;
+            NotificationChannel channel = new NotificationChannel(CHANNEL_ID, name, importance);
+            channel.setDescription(description);
+            notificationManager.createNotificationChannel(channel);
+        }
         if (notificationManager != null) {
-            notificationManager.notify(NOTIFICATION_ID, notification);
+            notificationManager.notify(NOTIFICATION_ID, notification.build());
         }
     }
 
