@@ -4,9 +4,13 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.InputType;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import java.io.IOException;
 
@@ -21,18 +25,30 @@ public class AlarmActivity extends AppCompatActivity {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
         Button stopAlarmButton = findViewById(R.id.stop_alarm);
+        TextView quote = findViewById(R.id.quote);
+        EditText typedQuote = findViewById(R.id.typedQuote);
         stopAlarmButton.setOnClickListener(v -> {
-            if (MediaPlayerSingleton.getMediaPlayer().isPlaying()) {
-                MediaPlayerSingleton.getMediaPlayer().stop();
-                try {
-                    MediaPlayerSingleton.getMediaPlayer().prepare();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
 
-            Intent intent = new Intent(this, MainActivity.class);
-            startActivity(intent);
+            // Get the text from the TextView and EditText
+            String textFromTextView = quote.getText().toString();
+            String textFromEditText = typedQuote.getText().toString();
+
+            if (textFromTextView.equals(textFromEditText)) {
+                Toast.makeText(AlarmActivity.this, "Good Morning! Have a nice day.", Toast.LENGTH_SHORT).show();
+                if (MediaPlayerSingleton.getMediaPlayer().isPlaying()) {
+                    MediaPlayerSingleton.getMediaPlayer().stop();
+                    try {
+                        MediaPlayerSingleton.getMediaPlayer().prepare();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+                Intent intent = new Intent(this, MainActivity.class);
+                startActivity(intent);
+            } else {
+                Toast.makeText(AlarmActivity.this, "Wake up! Type your motivation properly!", Toast.LENGTH_SHORT).show();
+            }
         });
     }
 

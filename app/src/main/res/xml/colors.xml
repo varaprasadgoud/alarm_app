@@ -1,1 +1,4 @@
-<color name="lavender">#8692f7</color>
+<resources>
+    <color name="white">#ffffff</color>
+    <color name="lavender">#8692f7</color>
+</resources>

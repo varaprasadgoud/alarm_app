@@ -87,6 +87,12 @@ public class MainActivity extends AppCompatActivity {
         cancelButton.setOnClickListener(v -> {
             cancelAlarm();
         });
+
+        Button setQuoteButton = findViewById(R.id.setQuote);
+        setQuoteButton.setOnClickListener(v -> {
+            Intent intent = new Intent(MainActivity.this, AlarmActivity.class);
+            startActivity(intent);
+        });
     }
 
     public void cancelAlarm() {
