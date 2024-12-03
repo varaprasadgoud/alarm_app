@@ -11,31 +11,17 @@ import android.os.Build;
 import android.os.Bundle;
 
 import android.content.Intent;
-import android.os.Bundle;
-import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
-import androidx.appcompat.app.AppCompatActivity;
-
-import com.example.myalarm.databinding.ActivityMainBinding;
 import com.google.android.material.timepicker.MaterialTimePicker;
 import com.google.android.material.timepicker.TimeFormat;
 
-import org.w3c.dom.Text;
-
-import java.io.IOException;
-
 public class MainActivity extends AppCompatActivity {
-
-    private ActivityMainBinding binding;
     private MaterialTimePicker timePicker;
     private Calendar calendar;
-    private AlarmManager alarmManager;
-    private PendingIntent pendingIntent;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,24 +66,14 @@ public class MainActivity extends AppCompatActivity {
         // Start the AlarmService when a button is pressed
         Button startButton = findViewById(R.id.setAlarm);
         startButton.setOnClickListener(v -> {
-//            if(MediaPlayerSingleton.getMediaPlayer().isPlaying()){
-//                MediaPlayerSingleton.getMediaPlayer().stop();
-//
-//                try {
-//                    MediaPlayerSingleton.getMediaPlayer().prepare();
-//                } catch (IOException e) {
-//                    e.printStackTrace();
-//                }
-//            }else{
-//               MediaPlayerSingleton.getMediaPlayer().start();
-//            }
-
-            Intent serviceIntent = new Intent(MainActivity.this, AlarmService.class);
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                serviceIntent.putExtra("hourOfDay", calendar.get(Calendar.HOUR_OF_DAY));
-                serviceIntent.putExtra("minute", calendar.get(Calendar.MINUTE));
+            if(calendar != null){
+                Intent serviceIntent = new Intent(MainActivity.this, AlarmService.class);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                    serviceIntent.putExtra("hourOfDay", calendar.get(Calendar.HOUR_OF_DAY));
+                    serviceIntent.putExtra("minute", calendar.get(Calendar.MINUTE));
+                }
+                startService(serviceIntent);
             }
-            startService(serviceIntent);  // Start the foreground service
         });
 
         Button cancelButton = findViewById(R.id.cancelAlarm);
@@ -122,5 +98,4 @@ public class MainActivity extends AppCompatActivity {
             MediaPlayerSingleton.releaseMediaPlayer();
         }
     }
-
 }
