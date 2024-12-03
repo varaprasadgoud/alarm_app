@@ -13,6 +13,7 @@ import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Build;
 import android.os.IBinder;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 
@@ -28,9 +29,14 @@ public class AlarmService extends android.app.Service {
     private static final int NOTIFICATION_ID = 2;
     private MediaPlayer mediaPlayer;
     private AudioManager audioManager;
+    private int hourOfDay;
+    private int minute;
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+        hourOfDay = intent.getIntExtra("hourOfDay", -1);
+        minute = intent.getIntExtra("minute", -1);
+
         // Create a notification channel for Android O and above
         createNotificationChannel();
 
@@ -51,7 +57,7 @@ public class AlarmService extends android.app.Service {
 
         // Build a notification for the foreground service
         Notification notification = new NotificationCompat.Builder(this, CHANNEL_ID)
-                .setContentTitle("Alarm Service Running")
+                .setContentTitle("Alarm Set for" + hourOfDay+" : "+minute)
                 .setContentText("The service is running in the background.")
                 .setSmallIcon(android.R.drawable.ic_dialog_info)
                 .build();
@@ -80,9 +86,23 @@ public class AlarmService extends android.app.Service {
 
     // Schedule the alarm
     private void scheduleAlarm() {
-        // Get the time for the alarm (e.g., set for 10 seconds later as a test)
+         final String TAG = "MainActivity";
+
         Calendar calendar = Calendar.getInstance();
-        calendar.add(Calendar.SECOND, 10);  // Schedule for 10 seconds from now
+        calendar.set(Calendar.HOUR_OF_DAY, hourOfDay);
+        calendar.set(Calendar.MINUTE, minute);
+        calendar.set(Calendar.SECOND, 0);
+        calendar.set(Calendar.MILLISECOND, 0);
+        Log.d(TAG, "Time selected: " + hourOfDay + ":" + minute);
+        Log.d(TAG, String.valueOf(calendar.getTimeInMillis()));
+        Log.d(TAG, String.valueOf(calendar.getTime()));
+
+
+
+        // If the time has already passed today, set it for tomorrow
+        if (calendar.before(Calendar.getInstance())) {
+            calendar.add(Calendar.DAY_OF_YEAR, 1);
+        }
 
         // Create an intent to trigger the alarm
         Intent alarmIntent = new Intent(this, AlarmReceiver.class);
