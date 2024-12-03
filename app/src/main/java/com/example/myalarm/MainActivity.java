@@ -30,43 +30,50 @@ public class MainActivity extends AppCompatActivity {
         MediaPlayerSingleton.setMediaPlayer(MediaPlayer.create(this, R.raw.forest_vibes));
 
         TextView selectTimeView = findViewById(R.id.selectTime);
-        selectTimeView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                timePicker = new MaterialTimePicker.Builder()
-                        .setTimeFormat(TimeFormat.CLOCK_12H)
-                        .setHour(12)
-                        .setMinute(0)
-                        .setTitleText("Select Alarm Time")
-                        .build();
-                timePicker.show(getSupportFragmentManager(), "androidknowledge");
-                timePicker.addOnPositiveButtonClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        Log.d("Mainactivity",String.valueOf(timePicker));
-                        if (timePicker.getHour() >= 12){
-                            selectTimeView.setText(
-                                    String.format("%02d",(timePicker.getHour() == 12 ? 12 : timePicker.getHour()-12)) +":"+ String.format("%02d", timePicker.getMinute())+"PM"
-                            );
-                        } else  {
-                            selectTimeView.setText(timePicker.getHour()+":" + String.format("%02d", timePicker.getMinute())+ "AM");
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+            selectTimeView.setOnClickListener(new View.OnClickListener() {
+                Calendar cal = Calendar.getInstance();
+                int currentHour = cal.get(Calendar.HOUR_OF_DAY);  // Current hour (24-hour format)
+                int currentMinute = cal.get(Calendar.MINUTE);// Current minute
+
+                @Override
+                public void onClick(View view) {
+                    timePicker = new MaterialTimePicker.Builder()
+                            .setTimeFormat(TimeFormat.CLOCK_12H)
+                            .setTitleText("Select Alarm Time")
+                            .setHour(currentHour)
+                            .setMinute(currentMinute)
+                            .build();
+
+                    timePicker.show(getSupportFragmentManager(), "androidknowledge");
+                    timePicker.addOnPositiveButtonClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            Log.d("Mainactivity", String.valueOf(timePicker));
+                            if (timePicker.getHour() >= 12) {
+                                selectTimeView.setText(
+                                        String.format("%02d", (timePicker.getHour() == 12 ? 12 : timePicker.getHour() - 12)) + ":" + String.format("%02d", timePicker.getMinute()) + "PM"
+                                );
+                            } else {
+                                selectTimeView.setText(timePicker.getHour() + ":" + String.format("%02d", timePicker.getMinute()) + "AM");
+                            }
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                                calendar = Calendar.getInstance();
+                                calendar.set(Calendar.HOUR_OF_DAY, timePicker.getHour());
+                                calendar.set(Calendar.MINUTE, timePicker.getMinute());
+                                calendar.set(Calendar.SECOND, 0);
+                                calendar.set(Calendar.MILLISECOND, 0);
+                            }
                         }
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                            calendar = Calendar.getInstance();
-                            calendar.set(Calendar.HOUR_OF_DAY, timePicker.getHour());
-                            calendar.set(Calendar.MINUTE, timePicker.getMinute());
-                            calendar.set(Calendar.SECOND, 0);
-                            calendar.set(Calendar.MILLISECOND, 0);
-                        }
-                    }
-                });
-            }
-        });
+                    });
+                }
+            });
+        }
 
         // Start the AlarmService when a button is pressed
         Button startButton = findViewById(R.id.setAlarm);
         startButton.setOnClickListener(v -> {
-            if(calendar != null){
+            if (calendar != null) {
                 Intent serviceIntent = new Intent(MainActivity.this, AlarmService.class);
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                     serviceIntent.putExtra("hourOfDay", calendar.get(Calendar.HOUR_OF_DAY));
