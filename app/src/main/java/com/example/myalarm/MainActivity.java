@@ -90,7 +90,7 @@ public class MainActivity extends AppCompatActivity {
 
         Button setQuoteButton = findViewById(R.id.setQuote);
         setQuoteButton.setOnClickListener(v -> {
-            Intent intent = new Intent(MainActivity.this, AlarmActivity.class);
+            Intent intent = new Intent(MainActivity.this, QuoteActivity.class);
             startActivity(intent);
         });
     }
