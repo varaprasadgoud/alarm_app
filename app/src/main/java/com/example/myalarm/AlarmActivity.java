@@ -2,9 +2,12 @@ package com.example.myalarm;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.InputType;
+import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
@@ -21,15 +24,19 @@ public class AlarmActivity extends AppCompatActivity {
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_alarm);
-
+        SharedPreferences sh = getSharedPreferences("MySharedPref", Context.MODE_PRIVATE);
+        String saved_quote = sh.getString("quote",null);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
         Button stopAlarmButton = findViewById(R.id.stop_alarm);
         TextView quote = findViewById(R.id.quote);
         EditText typedQuote = findViewById(R.id.typedQuote);
-        stopAlarmButton.setOnClickListener(v -> {
+        Log.d("TAG", saved_quote);
+        if( saved_quote != null){
+            quote.setText(saved_quote);
+        }
 
-            // Get the text from the TextView and EditText
+        stopAlarmButton.setOnClickListener(v -> {
             String textFromTextView = quote.getText().toString();
             String textFromEditText = typedQuote.getText().toString();
 
