@@ -31,7 +31,6 @@ public class AlarmActivity extends AppCompatActivity {
         Button stopAlarmButton = findViewById(R.id.stop_alarm);
         TextView quote = findViewById(R.id.quote);
         EditText typedQuote = findViewById(R.id.typedQuote);
-        Log.d("TAG", saved_quote);
         if( saved_quote != null){
             quote.setText(saved_quote);
         }

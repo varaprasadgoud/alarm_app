@@ -15,6 +15,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.material.timepicker.MaterialTimePicker;
 import com.google.android.material.timepicker.TimeFormat;
@@ -78,14 +79,18 @@ public class MainActivity extends AppCompatActivity {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                     serviceIntent.putExtra("hourOfDay", calendar.get(Calendar.HOUR_OF_DAY));
                     serviceIntent.putExtra("minute", calendar.get(Calendar.MINUTE));
+                    startService(serviceIntent);
+                    Toast.makeText(this, "Alarm set at "+calendar.get(Calendar.HOUR_OF_DAY) +":"+ calendar.get(Calendar.MINUTE), Toast.LENGTH_SHORT).show();
                 }
-                startService(serviceIntent);
+            }else{
+                Toast.makeText(this, "Please select time", Toast.LENGTH_SHORT).show();
             }
         });
 
         Button cancelButton = findViewById(R.id.cancelAlarm);
         cancelButton.setOnClickListener(v -> {
             cancelAlarm();
+            Toast.makeText(this, "Alarm Cancelled!", Toast.LENGTH_SHORT).show();
         });
 
         Button setQuoteButton = findViewById(R.id.setQuote);

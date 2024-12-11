@@ -86,18 +86,12 @@ public class AlarmService extends android.app.Service {
 
     // Schedule the alarm
     private void scheduleAlarm() {
-         final String TAG = "MainActivity";
 
         Calendar calendar = Calendar.getInstance();
         calendar.set(Calendar.HOUR_OF_DAY, hourOfDay);
         calendar.set(Calendar.MINUTE, minute);
         calendar.set(Calendar.SECOND, 0);
         calendar.set(Calendar.MILLISECOND, 0);
-        Log.d(TAG, "Time selected: " + hourOfDay + ":" + minute);
-        Log.d(TAG, String.valueOf(calendar.getTimeInMillis()));
-        Log.d(TAG, String.valueOf(calendar.getTime()));
-
-
 
         // If the time has already passed today, set it for tomorrow
         if (calendar.before(Calendar.getInstance())) {
