@@ -41,12 +41,12 @@ public class AlarmService extends android.app.Service {
         createNotificationChannel();
 
         audioManager = (AudioManager) getSystemService(Context.AUDIO_SERVICE);
-        audioManager.setStreamVolume(AudioManager.STREAM_MUSIC, audioManager.getStreamMaxVolume(AudioManager.STREAM_MUSIC), 0);
+        audioManager.setStreamVolume(AudioManager.STREAM_ALARM, audioManager.getStreamMaxVolume(AudioManager.STREAM_ALARM), AudioManager.FLAG_PLAY_SOUND);
 
         // Initialize the MediaPlayer and set it to the Singleton
         try{
             mediaPlayer = new MediaPlayer();
-            mediaPlayer.setAudioStreamType(AudioManager.STREAM_ALARM);
+            mediaPlayer.setAudioStreamType(audioManager.STREAM_ALARM);
             mediaPlayer.setDataSource(this, Uri.parse("android.resource://" + getPackageName() + "/" + R.raw.forest_vibes));
             mediaPlayer.prepare();
             MediaPlayerSingleton.setMediaPlayer(mediaPlayer);
