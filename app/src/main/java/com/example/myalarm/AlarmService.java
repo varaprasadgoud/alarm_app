@@ -100,7 +100,7 @@ public class AlarmService extends android.app.Service {
 
         // Create an intent to trigger the alarm
         Intent alarmIntent = new Intent(this, AlarmReceiver.class);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, alarmIntent, PendingIntent.FLAG_IMMUTABLE);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, alarmIntent, PendingIntent.FLAG_CANCEL_CURRENT | PendingIntent.FLAG_IMMUTABLE);
 
         // Get the AlarmManager system service
         AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
